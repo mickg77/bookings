@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My bookings</title>
-    
-</head>
+<?php include('header.php'); ?>
+
 <body>
     <h1>My Restaurant</h1>
     
@@ -21,16 +17,18 @@
         <input type="submit" value="book">
         
     </form>
-    
+    <a href="all.php">Display all records</a>
     
     
     <h2>Search for booking</h2>
     <!--this searches for a booking-->
+    <form method="POST" action="book.php">
+        <label></label>
+        
+    </form>
     
-    
-</body>
-</html>
 
 <?php
+include('footer.php');
 
 ?>
