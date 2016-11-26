@@ -18,6 +18,7 @@
         
     </form>
     <a href="all.php">Display all records</a>
+    <a href="delete.php">Delete record</a>
     
     
     <h2>Search for booking</h2>

@@ -6,7 +6,7 @@ include_once('functions/functions.php');
 
 
    
-    display_all();
+    delete_record();
 ?>
     <!--this area is html, that's why I've put it outside the php-->
     
