@@ -1,110 +1,168 @@
 <?php
 
+
+      $servername ="localhost";
+      $username ="mickg77";
+      $password ="";
+      $dbname ="c9";
+    
+    //global connection to the database
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+function dbconnect(){  
+    global $servername, $username, $password, $dbname;
+    
+    try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    //echo "Connected successfully"; 
+    }
+    
+catch(PDOException $e)
+    {
+    echo "Connection failed: " . $e->getMessage();
+    }
+}
+    
 function add_record(){
     //function adds to the database
-    require('dbconnect.php');
+   global $servername, $username, $password, $dbname,$conn;
+   
+    try{
+    
+     
+    
+      
     $name=$_POST["namebox"];
     $date=$_POST["datebox"];
     $time=$_POST["timebox"];
     
-    $sql = "INSERT INTO bookings (name, date,time) VALUES ('$name', '$date', '$time')";
+    $stmt = $conn->prepare("INSERT INTO bookings (name, date,time) VALUES (:name, :date,:time)");
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':date', $date);
+    $stmt->bindParam(':time', $time);
     
-    if(mysqli_query($conn,$sql)){
-       
-    }
-    else {
-        echo "Error ".$sql." ".mysqli_error($conn);
-    }
+    $stmt->execute();
+    
+  
+}
+catch(PDOException $e) {
+    echo "Error: " .$e->getMessage();
+    
+}
+$conn = null;
+    
 }
 
 function display_all(){
     
-    //function to display all of the records in the bookings table
-    require('dbconnect.php');
-    $myquery = "SELECT * FROM bookings";
+     //function to display all of the records in the bookings table
+    global $servername, $username, $password, $dbname, $conn;
+   try{
+    dbconnect();
     
-    $result=mysqli_query($conn,$myquery);
+   
     
-    if($result){
-       
-    }
-    else {
-        echo "Error ".$sql." ".mysqli_error($conn);
-    }
+        $stmt = $conn->prepare("SELECT * FROM bookings");
+        $stmt->execute();
     
-    if($result->num_rows>0){
-        //while there is row
-        
+        //$result=$stmt->fetchAll();
         echo '<table>';
-        while($row=$result->fetch_assoc()){
-            
-            echo 
-            "<tr><td>Name : ".$row["name"]. 
-            "</td><td> Date : ".$row["date"]. 
-            "</td><td> Time : ".$row["time"].
-            "</td><td>
-            </td><tr/>";
-        }
-        echo '</table>';
-        
-    }
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+{
+    echo '
+        <tr>
+          <td>'.$row["booking_id"].'</td>
+          <td>  '.$row["name"].'</td>
+          <td>  '.$row["date"].'</td>
+          <td>  '.$row["time"].'</td>
+          </tr>
+    ';
+}
+echo '</table>';
+   
+       
+   
+   }
+   catch(PDOException $e) {
+    echo "Error: " .$e->getMessage();
+    
+}
+$conn = null;
 
 }//end of display all
 
 function delete_record(){
     
     //function to display all of the records in the bookings table
-    require('dbconnect.php');
-    $myquery = "SELECT * FROM bookings";
+  //function to display all of the records in the bookings table
+    global $servername, $username, $password, $dbname,$conn;
+   try{
+    //dbconnect();
     
-    $result=mysqli_query($conn,$myquery);
     
-    if($result){
+   
+    
+        $stmt = $conn->prepare("SELECT * FROM bookings");
+        $stmt->execute();
+    
+        //$result=$stmt->fetchAll();
+        
+        echo '<div id="results"><table>';
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+{
+    echo '
+        <tr>
+          <td>'.$row["booking_id"].'</td>
+          <td>  '.$row["name"].'</td>
+          <td>  '.$row["date"].'</td>
+          <td>  '.$row["time"].'</td>
+          <td><a rel="external" onclick="return checkDelete();" href="delete.php?action=delete&booking_id='.$row["booking_id"].'">Delete this!</a>
+          </td></tr>
+    ';
+}
+
+echo '</table></div>';
+
+
        
-    }
-    else {
-        echo "Error ".$sql." ".mysqli_error($conn);
-    }
+   
+   }
+   catch(PDOException $e) {
+    echo "Error: " .$e->getMessage();
     
-    if($result->num_rows>0){
-        //while there is row
-    
-        echo '<table>';
-        while($row=$result->fetch_assoc()){
-           
-            echo'<tr><td>id : '.$row["booking_id"].
-            '<td>Name : '.$row["name"]. 
-            '</td><td> Date : '.$row["date"]. 
-            '</td><td> Time : '.$row["time"].
-            '</td><td>';
-            echo "<a onclick='return checkDelete()' href='delete.php?action=delete&booking_id=".$row['booking_id']."'>Delete this!</a>";
-            
-            
-            echo'</td><tr/>';
-        }
-        echo'</table>';
-    }
+}
+
     
    if($_GET['action'] == 'delete') { // if delete was requested AND an id is present...
     
+    
     $num=$_GET['booking_id'];
     
-    $sql = "DELETE FROM bookings WHERE booking_id = $num"; //
-
-    $result=mysqli_query($conn,$sql);
+    $stmt = $conn->prepare("DELETE FROM bookings WHERE booking_id = :num");
+    $stmt->bindParam(':num', $num);
     
-    if($result){
-       echo 'Record Deleted';
-       
-              
-       echo'<a href="index.php">Home</a>';
+    $stmt->execute();
+
+    
+    
+    if($stmt){
+       echo 'Record Deleted.';
+       echo '<script>refreshDiv();</script>';
+        
+      
     }
     else {
         echo "There is an Error ".$sql."<br/> ".mysqli_error($conn);
     } 
 
 }
-
+$conn = null;
 }//end of display all
 
 ?>

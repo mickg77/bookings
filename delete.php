@@ -1,7 +1,7 @@
 <?php
 
 include('header.php');
-require('dbconnect.php');
+
 include_once('functions/functions.php');
 
 
@@ -11,7 +11,7 @@ include_once('functions/functions.php');
     <!--this area is html, that's why I've put it outside the php-->
     
     
-    <a href="index.php">Go home</a>
+    
 
 <?php
     

@@ -1,22 +1,21 @@
 <?php
 
 include('header.php');
-require('dbconnect.php');
+
 include_once('functions/functions.php');
+
+
 
 if($_POST["book"]=="book"){
    
     add_record();
-?><!--temporarily closes the php-->
 
-<!--this area is html, that's why I've put it outside the php-->
-    
-    <p>Record added.</p>
-    <a href="index.php">Go home</a>
 
-<!--opening php again-->    
-<?php
     
+   echo' <p>Record added.</p>
+    <a href="index.php" rel="external">Go home</a>';
+
+
 }
 
 include('footer.php');
