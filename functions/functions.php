@@ -27,6 +27,8 @@ catch(PDOException $e)
     {
     echo "Connection failed: " . $e->getMessage();
     }
+    
+
 }
     
 function add_record(){
@@ -164,5 +166,9 @@ echo '</table></div>';
 }
 $conn = null;
 }//end of display all
+
+
+
+  
 
 ?>
